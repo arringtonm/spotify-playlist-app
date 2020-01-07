@@ -6,12 +6,18 @@
   * Key(s) (incl mode)
   * Genre(s)
   * Maybes:
-    * Danceability
-    * Energy
     * Explicit/Clean
     
     
 **Additional info to display:**
+  * 30s preview link
   * Length
   * Popularity
   * Artwork
+  * Danceability (bar graph/color)
+  * Energy (bar graph/color)
+
+
+**Other features:**
+  * Save/export individual/all to new playlist
+  * Notes feature?
