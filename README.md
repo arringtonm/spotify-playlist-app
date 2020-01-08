@@ -1,4 +1,14 @@
-# Spotify Accounts Authentication Examples
+## Hello!
+
+This is a proof-of-concept and work-in-progress web app created for myself and other DJs. Digital DJs have grown accustomed be being able to search and sort the music they own by tempo, key, playcount, etc, but this information is not publicly available for them on Spotify, where many of us listening to and discover new music. The goal of this project is to help DJs sort tracks on Spotify (and, perhaps, other playforms) with all available and relevant metadata to better fit it into their DJ sets or to save for purchase. 
+
+I plan on launching a workable release by Spring 2020, with more ambitious plans down the road for spin-off project (meta data informed auto DJ!)
+
+It is currently built on the official Spotify boilerplate authentication API. The instructions below are from Spotify and apply to the installation and operation of the basic app; operating the WIP app at this point requires some basic knowledge of JavaScript. 
+
+---
+
+## Spotify Accounts Authentication Examples
 
 This project contains basic demos showing the different OAuth 2.0 flows for [authenticating against the Spotify Web API](https://developer.spotify.com/web-api/authorization-guide/).
 
