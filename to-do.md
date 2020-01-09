@@ -19,5 +19,5 @@
 
 
 **Other features:**
-  * Save/export individual/all to new playlist
+  * Save/export individual/all to new Spotify playlist, XLS, Google Sheet? 
   * Notes feature?
