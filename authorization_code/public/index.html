@@ -3,6 +3,10 @@
   <head>
     <title>Playlist App</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script>
+      
+      const tracks = [];
+    </script>
     <style type="text/css">
       #login, #loggedin {
         display: none;
@@ -13,6 +17,39 @@
         white-space: nowrap;
         width: 500px;
       }
+
+
+      #tracklist {
+        margin: 10rem;
+        padding-left: 0;
+        list-style: none;
+        width: calc(100% - 4rem);        
+      }
+      #tracklist li {
+        display: flex; 
+        flex-direction: row;
+        justify-content: flex-start;
+        line-height: 1.6rem;
+        padding: 1rem;
+      }
+      #tracklist li:nth-of-type(2n) {
+        background-color: #deeaf5;
+      }
+
+      .artist {
+        font-weight: bold;
+        width: 30vw;
+      }
+      .title {
+        font-style: italic;
+        flex-wrap: wrap;
+      }
+      .tempo {
+        margin-left: auto;
+        margin-right: 1rem;
+      }
+
+
     </style>
   </head>
 
@@ -58,6 +95,11 @@
         <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
       </dl>
     </script>
+    
+    <section>
+      <ul id="tracklist">
+      </ul>
+    </section>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -115,17 +157,28 @@
                 }
             });
 
+
+
             //////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // my code 
 
-            let tracks = [];
+            tracksFormatted = [];
             let nextURL = null;
 
-            sendRequest('https://api.spotify.com/v1/me/tracks');
+            // sendRequest('https://api.spotify.com/v1/me/tracks');
             // sendRequest('https://api.spotify.com/v1/playlists/44RrTPi70vJYNUqlF3TGVz');
             // sendRequest('https://api.spotify.com/v1/playlists/6wjCvkAFovrVIRM8VfZLZG');
+            // 1MPJkHWZTqGpMmmp0FrHtL?si=b70163f3cca84400
+
+            sendRequest('https://api.spotify.com/v1/playlists/4eLlr659KcnaZNztpQBWAg?offset=100&limit=100');
+
+            // 4eLlr659KcnaZNztpQBWAg
+
+
+            // sendRequest('https://api.spotify.com/v1/playlists/1MPJkHWZTqGpMmmp0FrHtL?offset=50');
+
 
             function sendRequest (url) {
               $.ajax({
@@ -135,13 +188,22 @@
                 },
                 // success: function(response) {
                 success: function(response) {
-                  response.items.forEach(function(song) {
+                  // console.table(response)
+                  response.tracks.items.forEach(function(song) {
                     tracks.push({ 
                       artist: song.track.artists[0].name,
                       title: song.track.name,
                       id: song.track.id,
+                      // key: `${pitches[song.track.key]} ${majorOrMinor(song.track.mode)}`,
+                      // mode: song.track.mode
                     });
+                    console.table(song.track.artists);
                   });
+                  // console.table(response.tracks.items);
+                  // response.tracks.items.forEach(function(item) {
+                  //   tracks.push(item.track)
+                  // })
+
 
 
 
@@ -157,7 +219,7 @@
               });
             }
 
-            const pitches = ['C', 'C#"', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
+            const pitches = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 
             function majorOrMinor (input) {
               if (input === 0) { return 'min' }
@@ -186,28 +248,28 @@
           
 
             function getSpecifics (track) {
+              // console.log('getSpecifics()', track);
               if (track) { 
-                // console.log('[Getting ' + track + ']');
+                // console.log(track);
                 $.ajax({
                   url: 'https://api.spotify.com/v1/audio-analysis/' + track.id,
                   headers: {
                     'Authorization': 'Bearer ' + access_token
                   },
                   success: function(response) {
-                    track.tempo = response.track.tempo.toFixed(0);
-                    track.key = response.track.key;
-                    track.mode = response.track.mode;
+                    track.tempo = parseInt(response.track.tempo.toFixed(0));
+                    track.key = `${pitches[response.track.key]} ${majorOrMinor(response.track.mode)}`;
 
+                    // console.log(`${track.artist} - ${track.title} (${track.tempo}), ${count}`);
 
-
-                    // if (count >= tracks.length) {
-                    //   sortTracks();
-                    //   return;
-                    // } else {
-                    //   // console.log(track);
-                    //   count++;
-                    //   getSpecifics(tracks[count])
-                    // }
+                    if (count === (tracks.length - 1)) {
+                      sortTracks();
+                      return;
+                    } else {
+                      // console.log(track);
+                      count++;
+                      getSpecifics(tracks[count])
+                    }
                   }
                 });
               }
@@ -216,14 +278,25 @@
           function sortTracks () {
             let sortedTracks = [];
             tracks.forEach(function(song) {
-              // if (((song.key === 6) || (song.key == 8) || (song.key == 1)) && (song.mode === 0) && ((song.tempo >= 95 && song.tempo <= 110))) {
+              
+              // sort logic
 
+
+              // if (((song.key === 6) || (song.key == 8) || (song.key == 1)) && (song.mode === 0) && ((song.tempo >= 95 && song.tempo <= 110))) {
               // if (song.tempo >= 95 && song.tempo <= 110) {
+
                 sortedTracks.push(song);
               // }
+
             });
             sortedTracks.forEach(function(song) {
-              console.log(song);
+              let tracklistEl = document.getElementById('tracklist');
+              let songList = tracklistEl.innerHTML;
+              songList = songList + 
+                `<li><span class="artist">${song.artist}</span>
+                <span class="title">${song.title}</span>
+                <span class="tempo">${song.tempo} ${pitches[song.key]} ${majorOrMinor(song.mode)}</span>`;
+              tracklistEl.innerHTML = songList;
             })
           }
 
