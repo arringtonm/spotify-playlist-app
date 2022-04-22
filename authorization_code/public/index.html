@@ -194,10 +194,8 @@
                       artist: song.track.artists[0].name,
                       title: song.track.name,
                       id: song.track.id,
-                      // key: `${pitches[song.track.key]} ${majorOrMinor(song.track.mode)}`,
-                      // mode: song.track.mode
                     });
-                    console.table(song.track.artists);
+                    // console.table(song.track.artists);
                   });
                   // console.table(response.tracks.items);
                   // response.tracks.items.forEach(function(item) {
@@ -221,11 +219,7 @@
 
             const pitches = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 
-            function majorOrMinor (input) {
-              if (input === 0) { return 'min' }
-              else if (input === 1) { return 'maj' }
-              else { return null }
-            }
+            function majorOrMinor (input) { return input === 0 ? 'min' : 'maj' }
 
             let count = 0;
             const timedLookup = window.setInterval(() => {
@@ -257,8 +251,14 @@
                     'Authorization': 'Bearer ' + access_token
                   },
                   success: function(response) {
+                    // console.log(`${response.track.key} ${pitches[response.track.key]}`);
                     track.tempo = parseInt(response.track.tempo.toFixed(0));
-                    track.key = `${pitches[response.track.key]} ${majorOrMinor(response.track.mode)}`;
+                    track.key = `${pitches[response.track.key]}`;
+                    track.mode = majorOrMinor(response.track.mode);
+                    // console.log(track.key);
+                    // console.log(response.track.mode);
+
+
 
                     // console.log(`${track.artist} - ${track.title} (${track.tempo}), ${count}`);
 
@@ -295,7 +295,7 @@
               songList = songList + 
                 `<li><span class="artist">${song.artist}</span>
                 <span class="title">${song.title}</span>
-                <span class="tempo">${song.tempo} ${pitches[song.key]} ${majorOrMinor(song.mode)}</span>`;
+                <span class="tempo">${song.tempo} ${song.key} ${song.mode}</span>`;
               tracklistEl.innerHTML = songList;
             })
           }
